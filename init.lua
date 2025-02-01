@@ -1,5 +1,4 @@
 require("config.lazy")
-print("hello from init.lua")
 
 Func = function(x) 
 	local number = 5
@@ -32,6 +31,7 @@ Func = function(x)
 end
 
 vim.opt.shiftwidth = 4
+vim.opt.clipboard = "unnamedplus"
 vim.o.background = "dark"
 vim.cmd([[colorscheme gruvbox]])
 
