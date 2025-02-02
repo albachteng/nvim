@@ -6,6 +6,11 @@ vim.opt.clipboard = "unnamedplus"
 vim.o.background = "dark"
 vim.cmd([[colorscheme gruvbox]])
 
+-- add errors to quickfix
+vim.keymap.set("n", "<space><space>e", ":lua vim.diagnostic.setqflist() <CR><C-w>k")
+-- NTS: will not work without overriding windows "cast" feature bullshit
+vim.keymap.set("n", "<C-j>", "<cmd>cnext<CR>")
+vim.keymap.set("n", "<C-k>", "<cmd>cprev<CR>")
 -- source the current file
 vim.keymap.set("n", "<space><space>", ":nohl<CR>")
 -- source the current file
