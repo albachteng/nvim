@@ -34,6 +34,10 @@ vim.keymap.set("n", "<space>st", function()
 	vim.api.nvim_win_set_height(0, 15)
 	job_id = vim.bo.channel
 end)
+-- exit insert mode in terminal
+vim.keymap.set("t", "<esc><esc>", "<C-\\><C-n>")
+-- from terminal mode, close the terminal and return to previous buffer
+vim.keymap.set("t", "<C-o>", "<C-\\><C-n>:q<CR>")
 
 -- example send command to the terminal
 vim.keymap.set("n", "<space>example", function()
