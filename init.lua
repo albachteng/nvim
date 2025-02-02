@@ -23,11 +23,21 @@ vim.keymap.set("n", "<space>x", ":.lua<CR>")
 vim.keymap.set("v", "<space>x", ":lua<CR>")
 -- the most important keymap of all time
 vim.keymap.set("i", "jk", "<C-c>")
+-- oil
+vim.keymap.set("n", "<space>e", ":Oil<CR>")
+-- mini terminal
+local job_id = 0
 vim.keymap.set("n", "<space>st", function()
 	vim.cmd.vnew()
 	vim.cmd.term()
 	vim.cmd.wincmd("J")
 	vim.api.nvim_win_set_height(0, 15)
+	job_id = vim.bo.channel
+end)
+
+-- example send command to the terminal
+vim.keymap.set("n", "<space>example", function()
+	vim.fn.chansend(job_id, { "ls -la\r\n" })
 end)
 
 vim.api.nvim_create_autocmd('TextYankPost', {
