@@ -44,6 +44,8 @@ vim.keymap.set("n", "<space>example", function()
 	vim.fn.chansend(job_id, { "ls -la\r\n" })
 end)
 
+vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
+
 vim.api.nvim_create_autocmd('TextYankPost', {
 	desc = 'Highlight when yanking (copying) text',
 	group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
