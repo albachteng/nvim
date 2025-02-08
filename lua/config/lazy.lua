@@ -19,13 +19,13 @@ vim.opt.rtp:prepend(lazypath)
 -- loading lazy.nvim so that mappings are correct.
 -- This is also a good place to setup other settings (vim.opt)
 vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
+-- vim.g.maplocalleader = "\\"
 
 -- Setup lazy.nvim
 require("lazy").setup({
 	spec = {
 		-- import your plugins
-		{ "ellisonleao/gruvbox.nvim", priority = 1000,  config = true, opts = ... },
+		{ "ellisonleao/gruvbox.nvim", priority = 1000, config = true, opts = ... },
 		{ import = "config.plugins" },
 	},
 	-- Configure any other settings here. See the documentation for more details.

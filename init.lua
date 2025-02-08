@@ -8,8 +8,30 @@ vim.opt.relativenumber = true
 vim.o.background = "dark"
 vim.cmd([[colorscheme gruvbox]])
 
+-- set leader ca to code action
+vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { noremap = true, silent = true })
 -- add errors to quickfix
-vim.keymap.set("n", "<space><space>e", ":lua vim.diagnostic.setqflist() <CR><C-w>k")
+vim.keymap.set("n", "<space><space>e", function()
+	vim.diagnostic.setqflist()
+	local width = vim.o.columns
+	local height = vim.o.lines
+	local threshold = 200 -- Minimum width for side layout
+	-- Close existing quickfix
+	vim.cmd("cclose")
+
+	if width > height and width >= threshold then
+		local side_width = math.floor(width * 0.25)
+
+		vim.cmd("botright vertical copen " .. side_width) -- Quickfix on the right
+		vim.cmd("setlocal nobuflisted")
+	else
+		-- Bottom stacked layout
+		vim.cmd("botright copen")
+		vim.cmd("setlocal nobuflisted")
+	end
+	vim.cmd("wincmd k")
+end)
+--
 -- cycle through the quickfix list
 vim.keymap.set("n", "<C-j>", "<cmd>cnext<CR>")
 vim.keymap.set("n", "<C-k>", "<cmd>cprev<CR>")
@@ -28,10 +50,24 @@ vim.keymap.set("n", "<space>e", ":Oil<CR>")
 -- mini terminal
 local job_id = 0
 vim.keymap.set("n", "<space>st", function()
-	vim.cmd.vnew()
-	vim.cmd.term()
-	vim.cmd.wincmd("J")
-	vim.api.nvim_win_set_height(0, 15)
+	local width = vim.o.columns
+	local height = vim.o.lines
+	local threshold = 200                -- Minimum width for side layout
+	-- Close existing quickfix and terminal windows
+	vim.cmd("silent! exe 'bd! term://*'") -- Close previous terminal
+	vim.cmd("cclose")
+	if width > height and width >= threshold then
+		local side_width = math.floor(width * 0.25)
+		vim.cmd("botright vertical new")
+		vim.cmd("vertical resize " .. side_width)
+		vim.cmd("terminal")
+		vim.cmd("setlocal nobuflisted")
+	else
+		-- Bottom stacked layout
+		vim.cmd("botright split | terminal")
+		vim.cmd("resize 10") -- Adjust terminal height
+		vim.cmd("setlocal nobuflisted")
+	end
 	job_id = vim.bo.channel
 end)
 -- exit insert mode in terminal
