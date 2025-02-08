@@ -8,6 +8,8 @@ vim.opt.relativenumber = true
 vim.o.background = "dark"
 vim.cmd([[colorscheme gruvbox]])
 
+local termBuf = nil
+
 -- set leader ca to code action
 vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { noremap = true, silent = true })
 -- add errors to quickfix
@@ -52,28 +54,45 @@ local job_id = 0
 vim.keymap.set("n", "<space>st", function()
 	local width = vim.o.columns
 	local height = vim.o.lines
-	local threshold = 200                -- Minimum width for side layout
-	-- Close existing quickfix and terminal windows
-	vim.cmd("silent! exe 'bd! term://*'") -- Close previous terminal
-	vim.cmd("cclose")
-	if width > height and width >= threshold then
-		local side_width = math.floor(width * 0.25)
-		vim.cmd("botright vertical new")
-		vim.cmd("vertical resize " .. side_width)
-		vim.cmd("terminal")
-		vim.cmd("setlocal nobuflisted")
+	local threshold = 200 -- Minimum width for side layout
+	if termBuf and vim.api.nvim_buf_is_valid(termBuf) then
+		-- reopen with prior buffer
+		-- Close existing quickfix and terminal windows
+		-- vim.cmd("silent! exe 'bd! term://*'") -- Close previous terminal
+		vim.cmd("cclose") -- close quickfix
+		if width > height and width >= threshold then
+			local side_width = math.floor(width * 0.25)
+			vim.cmd("botright vertical split")
+			vim.cmd("vertical resize " .. side_width)
+		else
+			-- Bottom stacked layout
+			vim.cmd("botright split | buffer " .. termBuf)
+			vim.cmd("resize 10") -- Adjust terminal height
+		end
+		vim.cmd("buffer " .. termBuf)
 	else
-		-- Bottom stacked layout
-		vim.cmd("botright split | terminal")
-		vim.cmd("resize 10") -- Adjust terminal height
-		vim.cmd("setlocal nobuflisted")
+		-- create a new buffer
+		termBuf = vim.api.nvim_create_buf(false, true)
+		vim.cmd("cclose") -- close quickfix
+		if width > height and width >= threshold then
+			local side_width = math.floor(width * 0.25)
+			vim.cmd("botright vertical new")
+			vim.cmd("vertical resize " .. side_width)
+		else
+			-- Bottom stacked layout
+			vim.cmd("botright split")
+			vim.cmd("resize 10") -- Adjust terminal height
+		end
+		vim.cmd("terminal")
+		termBuf = vim.api.nvim_get_current_buf()
+		job_id = vim.bo.channel
 	end
-	job_id = vim.bo.channel
+	vim.api.nvim_feedkeys("A", "t", false)
 end)
 -- exit insert mode in terminal
 vim.keymap.set("t", "<esc><esc>", "<C-\\><C-n>")
 -- from terminal mode, close the terminal and return to previous buffer
-vim.keymap.set("t", "<C-o>", "<C-\\><C-n>:q<CR>")
+vim.keymap.set("t", "<C-o>", "<C-\\><C-n>:close<CR>")
 
 -- example send command to the terminal
 vim.keymap.set("n", "<space>example", function()
