@@ -22,7 +22,7 @@ vim.keymap.set("n", "<space><space>e", function()
 	vim.cmd("cclose")
 
 	if width > height and width >= threshold then
-		local side_width = math.floor(width * 0.25)
+		local side_width = math.floor(width * 0.5)
 
 		vim.cmd("botright vertical copen " .. side_width) -- Quickfix on the right
 		vim.cmd("setlocal nobuflisted")
@@ -61,13 +61,13 @@ vim.keymap.set("n", "<space>st", function()
 		-- vim.cmd("silent! exe 'bd! term://*'") -- Close previous terminal
 		vim.cmd("cclose") -- close quickfix
 		if width > height and width >= threshold then
-			local side_width = math.floor(width * 0.25)
+			local side_width = math.floor(width * 0.5)
 			vim.cmd("botright vertical split")
 			vim.cmd("vertical resize " .. side_width)
 		else
 			-- Bottom stacked layout
 			vim.cmd("botright split | buffer " .. termBuf)
-			vim.cmd("resize 10") -- Adjust terminal height
+			vim.cmd("resize 15") -- Adjust terminal height
 		end
 		vim.cmd("buffer " .. termBuf)
 	else
@@ -75,13 +75,13 @@ vim.keymap.set("n", "<space>st", function()
 		termBuf = vim.api.nvim_create_buf(false, true)
 		vim.cmd("cclose") -- close quickfix
 		if width > height and width >= threshold then
-			local side_width = math.floor(width * 0.25)
+			local side_width = math.floor(width * 0.5)
 			vim.cmd("botright vertical new")
 			vim.cmd("vertical resize " .. side_width)
 		else
 			-- Bottom stacked layout
 			vim.cmd("botright split")
-			vim.cmd("resize 10") -- Adjust terminal height
+			vim.cmd("resize 15") -- Adjust terminal height
 		end
 		vim.cmd("terminal")
 		termBuf = vim.api.nvim_get_current_buf()
@@ -116,3 +116,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 		vim.opt.relativenumber = false
 	end,
 })
+
+require('Comment').setup()
+local comment_api = require("Comment.api")
+vim.keymap.set("n", "<C-_>", comment_api.toggle.linewise.current, { desc = "Toggle comment" })
