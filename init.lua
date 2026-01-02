@@ -120,3 +120,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 require('Comment').setup()
 local comment_api = require("Comment.api")
 vim.keymap.set("n", "<C-_>", comment_api.toggle.linewise.current, { desc = "Toggle comment" })
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+	pattern = "*.go",
+	callback = function()
+		vim.lsp.buf.format({ async = false })
+	end,
+})
