@@ -14,11 +14,6 @@ return {
 				use_nvim_cmp_as_default = true,
 				nerd_font_variant = 'mono'
 			},
-			fuzzy = {
-				prebuilt_binaries = {
-					force_version = "latest"
-				}
-			},
 			-- Default list of enabled providers defined so that you can extend it
 			-- elsewhere in your config, without redefining it, due to `opts_extend`
 			sources = {
