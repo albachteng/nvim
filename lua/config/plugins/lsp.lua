@@ -16,13 +16,6 @@ return {
 		},
 		config = function()
 			local blink = require('blink.cmp')
-			blink.setup({
-				fuzzy = {
-					prebuilt_binaries = {
-						force_version = "latest"
-					}
-				}
-			})
 			local capabilities = blink.get_lsp_capabilities()
 			local lspconfig = require("lspconfig")
 			lspconfig.lua_ls.setup({ capabilities = capabilities })
